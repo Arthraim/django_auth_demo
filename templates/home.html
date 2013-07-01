@@ -1,0 +1,7 @@
+<h1>Home</h1>
+{% if login_member %}
+    <h2>hello, <a href="/me">{{ login_member.username }}</a></h2>
+    <p><a href="/logout">LOGOUT</a></p>
+{% else %}
+    <h2>plz, <a href="/login">LOGIN</a> or <a href="/register">REGISTER</a></h2>
+{% endif %}

@@ -1,6 +1,9 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 from auth_demo.models import Member
+import json
 
 def home(request):
     login_member = request.session.get('login_member')
@@ -40,14 +43,42 @@ def login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        m = Member.objects.get(username=username)
-        if m is None:
+        try:
+            m = Member.objects.get(username=username)
+        except ObjectDoesNotExist as e:
             return render_to_response('login.html', {'alert':'user does not exist'})
+
         if m.password != password:
             return render_to_response('login.html', {'alert':'password error'})
 
         request.session['login_member'] = m
         return HttpResponseRedirect('/home')
+
+def json_response(dict):
+    return HttpResponse(json.dumps(dict), mimetype="application/json")
+
+def login_ajax(request):
+    if request.method == 'GET':
+        return render_to_response('login_ajax.html', {})
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if username is None or username == '':
+            return json_response({'result':'error', 'message':'plz input username'})
+        elif password is None or password == '':
+            return json_response({'result':'error', 'message':'plz input password'})
+
+        try:
+            m = Member.objects.get(username=username)
+        except ObjectDoesNotExist as e:
+            return json_response({'result':'error', 'message':'user does not exist'})
+
+        if m.password != password:
+            return json_response({'result':'error', 'message':'password error'})
+        else:
+            request.session['login_member'] = m
+            return json_response({'result':'ok', 'message':'success'})
 
 def logout(request):
     request.session['login_member'] = None

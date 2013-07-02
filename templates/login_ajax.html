@@ -1,0 +1,27 @@
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<h1>login</h1>
+<form id="login_form" action="/login/" method="POST">
+    <p>username<br /><input id="username" type="text" name="username" /></p>
+    <p>password<br /><input id="password" type="text" name="password" /></p>
+    <p><input type="submit" /></p>
+</form>
+<p style="color:#ff0000;" id="result"></p>
+<script>
+    $('#login_form').submit(function(){
+        var username = $('#username').val();
+        var password = $('#password').val();
+        $.ajax({
+            'url':'/login_ajax/',
+            'type':'post',
+            'data':{
+                'username':username,
+                'password':password
+            },
+            'success':function(ret){
+                console.log(ret['message'])
+                $("#result").text(ret['message']);
+            }
+        });
+        return false;
+    });
+</script>

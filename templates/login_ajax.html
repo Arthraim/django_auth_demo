@@ -7,21 +7,23 @@
 </form>
 <p style="color:#ff0000;" id="result"></p>
 <script>
-    $('#login_form').submit(function(){
-        var username = $('#username').val();
-        var password = $('#password').val();
-        $.ajax({
-            'url':'/login_ajax/',
-            'type':'post',
-            'data':{
-                'username':username,
-                'password':password
-            },
-            'success':function(ret){
-                console.log(ret['message'])
-                $("#result").text(ret['message']);
-            }
+    $(document).ready(function(){
+        $('#login_form').submit(function(){
+            var username = $('#username').val();
+            var password = $('#password').val();
+            $.ajax({
+                'url':'/login_ajax/',
+                'type':'post',
+                'data':{
+                    'username':username,
+                    'password':password
+                },
+                'success':function(ret){
+                    console.log(ret['message'])
+                    $("#result").text(ret['message']);
+                }
+            });
+            return false;
         });
-        return false;
     });
 </script>
